@@ -63,6 +63,7 @@ class Yearbra_model extends MY_Model
 		$search_field 	= $this->session->userdata($this->session_name . '_search_field');
 		$value 	= $this->session->userdata($this->session_name . '_value');
 		$value 	= trim($value);
+		$companyname = 
 		$payyear = $this->session->userdata($this->session_name . '_payyear');
 
 		$where	= '';
@@ -125,6 +126,7 @@ class Yearbra_model extends MY_Model
 				, yearpr_totalfun AS totalFunPersonYear
 				, tb_person.person_total AS rfPersonIDPersonTotal
 				, tb_company.company_name AS rfCompanyIDCompanyName
+				, tb_company.company_nick AS rfCompanyIDCompanyNick
 				");
 		$this->db->join('tb_person', "$this->my_table.rf_name_id = tb_person.name_id", 'left');
 		$this->db->join('tb_branch', 'tb_person.rf_branch_id = tb_branch.branch_id', 'left');

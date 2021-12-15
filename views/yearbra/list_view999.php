@@ -1,132 +1,139 @@
 <!-- [ View File name : list_view.php ] -->
-
 <div class="row">
 	<div class="col-md-12">
-	<div class="card">
+		<div class="card">
 			<div class="card-header w3-theme-d5">
-				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายงานประจำปี : แยกตามสาขา</b></h3>
+				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายประจำเดือน : แยกตามสาขา</b></h3>
 			</div>
+			<div class="card-body">
+				<form class="forms-sample" name="formSearch" method="post" action="{page_url}/search">
+					{csrf_protection_field}
+					<div class="row">
+						<div class="col-sm-6">
 
-	<div class="card-body">
-	<form class="forms-sample" name="formSearch" method="post" action="{page_url}/search">
-			{csrf_protection_field}
-		<div class="col-md-12">	
-			<div class="row">
-				<div class="col-sm-7">
-					<div class="row">	
-						<div class="form-group">
-							<label class='control-label' for='rf_branch_id'>
-								<h6>ระบุสาขาที่ต้องการแสดงผล : </h6>
+							<div class="form-group">
+								<input type="hidden" class="form-control" value="rf_branch_id" name="search_field" />
+
+							</div>
+							<div class="form-group">
+								<label class='control-label' for='rf_branch_id'>
+									<h6>ระบุสาขาที่ต้องการค้นหา : </h6>
 								</label> <br>
 								<select id="rf_branch_id" name="txtSearch" value="{txt_search}">
 									<option value="">- เลือก สาขา -</option>
 									{tb_branch_rf_branch_id_option_list}
 								</select>
-						</div>
-						<div class="form-group">
-							<label class='control-label' for='txtYear'><h6> &nbsp; &nbsp;</h6></label> 
-							<input type="text" class="form-control col-sm-8" id="txtYear" name="txtYear" value="{txt_year}" placeholder="ระบุ ปี พ.ศ.">
-						</div>
-					
-					</div>
-
-					<div class="row">
-							<div class="form-group">
-								<input type="hidden" class="form-control" value="rf_branch_id" name="search_field" />
-								<button type="submit" name="submit" class="btn btn-info">
-								<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
-								</button>
-								<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button>
-								</a>
 							</div>
+							<div class="form-group">
+									<label class='control-label' for='monthpay'>
+										<h6> &nbsp; &nbsp; ระบุปี : </h6>
+									</label>
+									<input type="text" class="form-control col-sm-12" id="txtYear" name="txtYear" value="{txt_year}" placeholder="ระบุ ปี พ.ศ.">
+								</div>
+						</div>
+						<input type="hidden" value="{order_by}" name="order_by" />
+
 					</div>
+				<div class="row">
+						<div class="col-sm-6">
+									<button type="submit" name="submit" class="btn btn-info">
+							<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
+							</button>
+							<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button></a>
+						</div>	
 				</div>
 
-				<div class="col-sm-5">
 					<div class="row">
-						<div class="form-group">
-							<label class='control-label' for='rf_report4_id'>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<input type="hidden" class="form-control" id="report4id" name="report4id" value="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class='control-label' for='rf_report4_id'>
 									<h6>ระบุชื่อรายงาน : </h6>
-							</label> <br>
-							<select id="rf_report4_id" name="rf_report4_id" value="{txt_report}">
+								</label> <br>
+								<select id="rf_report4_id" name="rf_report4_id" value="{txt_report}">
 									<option value="">- เลือก รายงาน -</option>
 									{tb_report_report_id_option_list}
-							</select>
-						</div>
+								</select>
+							</div>
+
+							</div>
 					</div>
-					<input type="hidden" class="form-control" id="report4id" name="reportid" value="">
+		
 					<div class="row">
+						<div class="col-sm-6">		
+
 							<div class="form-group">
-									<a class="btn btn-success btn-lg" id="btnReport" href="" title="ส่งออกข้อมูล">
+
+								<a class="btn btn-success btn-lg" id="btnReport" href="" title="ส่งออกข้อมูล">
 									<i class="fas fa-download"></i></span> Export Report
 								</a>
 							</div>
+						</div>
 					</div>
-				</div>
 
-			</div>
-
-		</div>		
-	</form>
-
-		<br>
+				</form>
+				<br>
 				<div class="row">
-					<div class="col-sm-9">
+					<div class="col-sm-8">
 						<h4><i class="fa fa-list-alt"></i><b> List Data Payroll</b></h4>
 					</div>
-					<div class="col-sm-3 text-left">
+					<div class="col-sm-4 text-left">
 						<h4> ทั้งหมด <span class="badge badge-primary"> {search_row}</span> รายการ</b></h4>
 
 					</div>
 				</div>
 
-		<hr />
 
-		<style type="text/css">
-			input[type=search] {
-			width: 350px !important;
-			}
-		</style>
+				<hr />
+				<style type="text/css">
+					input[type=search] {
+						width: 350px !important;
+					}
+				</style>
 
 				<div class="dt-responsive">
 
 					<table id="simpletable" class="table table-striped table-bordered nowrap">
 						<thead class="info">
 							<tr bgcolor="#dddddd">
-								<th>ชื่อสาขา</th>
-								<th>เลขผู้เสียภาษี</th>
+								<th>#</th>
+								<th>เลขประจำตัวผู้เสียภาษี</th>
 								<th>ชื่อพนักงาน</th>
 								<th>ยอดรายได้</th>
 								<th>ยอดภาษี</th>
-								<th>หักประกันสังคม</th>
-								<th>หักกองทุน</th>
-								<th>รวมลดหย่อน</th>
-								
+								<th>ยอดเงินหักประกันสังคม</th>
+								<th>ยอดเงินหักกองทุน</th>
+								<th>ยอดเงินรวมลดหย่อน</th>
+								<th>บริษัท</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr parser-repeat="[data_list]" id="row_{record_number}">
-								<td>{rfBranchIdBranchNick}</td>
+								<td style="text-align:center;">[{record_number}]</td>
 								<td>{rfPersonIDPersonMumsso}</td>
 								<td>{rfNameIdEmpName} {rfNameIdEmpSurname}</td>
-								<td>{yearpr_totalmony}</td>
-								<td>{yearpr_totaltax}</td>
-								<td>{yearpr_totalsso}</td>
+								<td>{totalMonyPersonYear}</td>
+								<td>{totalTaxPersonYear}</td>
+								<td>{totalSsoPersonYear}</td>
 								<td>{totalFunPersonYear}</td>
 								<td>{rfPersonIDPersonTotal}</td>
-								
+								<td>{rfCompanyIDCompanyName}</td>
 							</tr>
 						</tbody>
 					</table>
 
 				</div>
+			</div>
 
+
+		</div>
 	</div>
-	</div>
-
-
-	</div>	
 </div>
+
 
 <!-- Modal Delete -->
 <div class="modal fade" id="confirmDelModal" tabindex="-1" role="dialog" aria-labelledby="confirmDelModalLabel" aria-hidden="true">

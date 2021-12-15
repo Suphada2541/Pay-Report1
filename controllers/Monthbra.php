@@ -93,7 +93,7 @@ class Monthbra extends CRUD_Controller
 		$this->session->unset_userdata($this->Monthbra->session_name . '_value');
 		$this->session->unset_userdata($this->Monthbra->session_name . '_paynum');
 		$this->session->unset_userdata($this->Monthbra->session_name . '_payyear');
-		$this->session->unset_userdata($this->Payprbra->session_name . '_report');
+		$this->session->unset_userdata($this->Monthbra->session_name . '_report');
 		$this->search();
 	}
 
@@ -121,14 +121,14 @@ class Monthbra extends CRUD_Controller
 			$value = $this->input->post('txtSearch', TRUE);
 			$paynum = $this->input->post('txtpnum', TRUE);
 			$payyear = $this->input->post('txtYear', TRUE);
-			$report = $this->input->post('rf_report_id', TRUE);
+			$report = $this->input->post('rf_branch_id', TRUE);
 
 			$arr = array(
 				$this->Monthbra->session_name . '_search_field' => $search_field, 
 				$this->Monthbra->session_name . '_value' => $value,  
 				$this->Monthbra->session_name . '_paynum' => $paynum,
 				$this->Monthbra->session_name . '_payyear' => $payyear,
-				$this->Payprbra->session_name . '_report' => $report
+				$this->Monthbra->session_name . '_report' => $report
 			);
 
 			$this->session->set_userdata($arr);
@@ -137,7 +137,7 @@ class Monthbra extends CRUD_Controller
 			$value = $this->session->userdata($this->Monthbra->session_name . '_value');
 			$paynum = $this->session->userdata($this->Monthbra->session_name . '_paynum');
 			$payyear = $this->session->userdata($this->Monthbra->session_name . '_payyear');
-			$report = $this->session->userdata($this->Payprbra->session_name . '_report');
+			$report = $this->session->userdata($this->Monthbra->session_name . '_report');
 		}
 
 		$start_row = $this->uri->segment($this->uri_segment ,'0');
@@ -271,41 +271,6 @@ class Monthbra extends CRUD_Controller
 		return $data;
 	}
 
-	 public function export_payprbra_report()
-	 {
-		 $report = $this->session->userdata('_report');
- 
-		 if ($report == 11) //ประกันสังคม ประจำเดือน
-		 {
-			 $this->genreport_301Pdf();
-		 }
-		 elseif ($report == 12)  //ภาษี (ภงด1) ประจำเดือน
-		 {
-			 $this->genreport_302Pdf();
-		 }
-		 elseif ($report == 13) //Data รายชื่อพนักงานเข้ากองทุนสำรองชีพ
-		 {
-			 $this->genreport_303Excel();
-		 }
-		 elseif ($report == 14) //รายการรับเงินจากพนักงาน ประจำเดือน
-		 {
-			 $this->genreport_304Excel();
-		 }
-		 elseif ($report == 21) //Dataยอดนำส่งประกันสังคมประจำเดือน
-		 {
-			 $this->genreport_305Excel();
-		 } 
-		 elseif ($report == 22) //ภาษี ประจำเดือน
-		{
-			$this->genreport_306Excel();
-		}
-		 else
-		 {
-			 return $report;
-		 }
- 
-		 // $this->data['rf_report_id']	= $rf_report_id;
-	 }
  
 
 	public function genreport_301Pdf() 
@@ -342,7 +307,7 @@ class Monthbra extends CRUD_Controller
 		 // กำหนดข้อมูลที่จะแสดงในส่วนของ header และ footer
 		 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE."รายละเอียดการนำส่งเงินสมทบ                                                                                                                                     "
 		 ."สปส.1-10 (ส่วนที่2)"
-		 , PDF_HEADER_STRING."สำหรับค่าจ้างเดือน         $monthpayPaymonth        พ.ศ. $payYear                                                                                                               "
+		 , PDF_HEADER_STRING."สำหรับค่าจ้างเดือน   $monthpayPaymonth        พ.ศ. $payYear                                                                                                               "
 		 ."เลขที่บัญชี $rfBranchIdSocialAccount "     
 		 ."  สถานประกอบการ บริษัท $rfBranchIdCompanyName                                                                                                     "
 		 ."ลำดับที่สาขา  $rfBranchIdBranchSocial"

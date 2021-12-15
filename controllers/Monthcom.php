@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH'))  exit('No direct script access allowed');
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 /**
  * [ Controller File name : Monthcom.php ]
  */
@@ -82,6 +84,7 @@ class Monthcom extends CRUD_Controller
 		$this->session->unset_userdata($this->Monthcom->session_name . '_value');
 		$this->session->unset_userdata($this->Monthcom->session_name . '_paynum');
 		$this->session->unset_userdata($this->Monthcom->session_name . '_payyear');
+
 		$this->search();
 	}
 
@@ -93,7 +96,7 @@ class Monthcom extends CRUD_Controller
 	public function search()
 	{
 		$this->breadcrumb_data['breadcrumb'] = array(
-						
+						array('title' => 'Mainpaypr', 'url' => site_url('reportuser/mainmonth')),
 						array('title' => 'รายงานพิเศษ', 'class' => 'active', 'url' => '#'),
 		);
 		
@@ -107,14 +110,20 @@ class Monthcom extends CRUD_Controller
 
 		if (isset($_POST['submit'])) {
 			$search_field =  $this->input->post('search_field', TRUE);
-			$value = $this->input->post('txtSearch', TRUE);
+			$value = $this->input->post('company_id', TRUE);
 			$paynum = $this->input->post('txtpnum', TRUE);
 			$payyear = $this->input->post('txtYear', TRUE);
+		
+
+
 			$arr = array(
 				$this->Monthcom->session_name . '_search_field' => $search_field, 
 				$this->Monthcom->session_name . '_value' => $value,  
 				$this->Monthcom->session_name . '_paynum' => $paynum,
-				$this->Monthcom->session_name . '_payyear' => $payyear);
+				$this->Monthcom->session_name . '_payyear' =>$payyear,
+				
+	
+			);
 
 			$this->session->set_userdata($arr);
 		} else {
@@ -122,6 +131,7 @@ class Monthcom extends CRUD_Controller
 			$value = $this->session->userdata($this->Monthcom->session_name . '_value');
 			$paynum = $this->session->userdata($this->Monthcom->session_name . '_paynum');
 			$payyear = $this->session->userdata($this->Monthcom->session_name . '_payyear');
+			
 		}
 
 		$start_row = $this->uri->segment($this->uri_segment ,'0');
@@ -161,7 +171,7 @@ class Monthcom extends CRUD_Controller
 
 		$this->data['data_list']	= $list_data;
 		$this->data['search_field']	= $search_field;
-		$this->data['txt_search']	= $value;
+		$this->data['company_id']	= $value;
 		$this->data['txt_pnum']	= $paynum;
 		$this->data['txt_year']	= $payyear;
 		$this->data['current_path_uri'] = uri_string();
@@ -538,16 +548,16 @@ class Monthcom extends CRUD_Controller
 		for($i=0;$i<$count;$i++){
 			$start_row++;
 			$data[$i]['record_number'] = $start_row;
-			$pk1 = $data[$i]['monthpr_id'];
+			$pk1 = $data[$i]['paypr_id'];
 			$data[$i]['url_encrypt_id'] = urlencode(encrypt($pk1));
 
 			if($pk1 != ''){
 				$pk1 = ci_encrypt($pk1);
 			}
 			$data[$i]['encrypt_monthpr_id'] = $pk1;
-			$data[$i]['month_mony_sso'] = number_format($data[$i]['month_mony_sso'],2);
-			$data[$i]['month_de_ssop'] = number_format($data[$i]['month_de_ssop'],2);
-			$data[$i]['month_de_ssoc'] = number_format($data[$i]['month_de_ssoc'],2);
+			// $data[$i]['month_mony_sso'] = number_format($data[$i]['month_mony_sso'],2);
+			// $data[$i]['month_de_ssop'] = number_format($data[$i]['month_de_ssop'],2);
+			// $data[$i]['month_de_ssoc'] = number_format($data[$i]['month_de_ssoc'],2);
 			$data[$i]['rfNameIdStartDate'] = $this->setDateView($data[$i]['rfNameIdStartDate']);
 		}
 		return $data;
@@ -1195,6 +1205,102 @@ class Monthcom extends CRUD_Controller
 		$pdf->Output("Tax $rfBranchIdBranchCode.pdf", 'I');
 		
 	}
+
+	//รายงาน
+	public function genreport_505Excel() //ประกันสังคมส่วนที่ 2
+	{
+		// load excel library
+		$this->load->library('reportuser/Excel');
+
+		$results = $this->Monthcom->read();
+		$data_lists = $this->setDataListFormat($results['list_data'], 0);
+		$this->data['data_list'] = $data_lists;
+
+		$objectPHPExcel = new PHPExcel();
+		$objectPHPExcel->setActiveSheetIndex(0);
+
+		foreach ($data_lists as $row) {
+			$monthpayPaymonth = $row['monthpayPaymonth'];
+			$yearpay = $row['monthpayPayyear'];
+			$rfCompanyIdCompanyNick = $row['rfCompanyIdCompanyName'];
+			
+		}
+
+		//หัว
+		$objectPHPExcel->getActiveSheet()->SetCellValue('B1', 'รายละเอียดการนำส่งเงินสมทบ');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('F1', 'สปส.1-10 (ส่วนที่ 2 )');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('B2', 'สำหรับค่าจ้างเดือน '." $monthpayPaymonth"."".' พ.ศ.'."$yearpay");
+		$objectPHPExcel->getActiveSheet()->SetCellValue('B3', 'ชื่อสถานประกอบการ '."$rfCompanyIdCompanyNick");
+
+		$objectPHPExcel->getActiveSheet()->SetCellValue('A4', 'ลำดับที่');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('B4', 'เลขประจำตัวประชาชน');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('C4', 'คำนำหน้า');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('D4', 'ชื่อ');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('E4', 'ชื่อสกุล');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('F4', 'ค่าจ้างที่จ่ายจริง');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('G4', "เงินสมทบผู้ประกันตน (ค่าจ้างที่ใช้ในการคำนวณ \n ไม่ต่ำกว่า 1,650 บาท และไม่เกิน 15,000 บาท)");
+		$objectPHPExcel->getActiveSheet()->SetCellValue('H4', 'ลำดับสาขาประกันสังคม');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('I4', 'รหัสกองทุนประกันสังคม');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('J4', 'ชื่อสาขา');
+		$objectPHPExcel->getActiveSheet()->SetCellValue('K4', 'เขตที่นำส่งประกันสังคม');
+
+		//ผสานเซล
+		// $objectPHPExcel->getActiveSheet()->mergeCells('G4:G5');
+		$objectPHPExcel->getActiveSheet()->mergeCells('B2:C2');
+		$objectPHPExcel->getActiveSheet()->mergeCells('B3:E3');
+
+		$objectPHPExcel->getActiveSheet()->getStyle("A1:K1")->getFont()->setBold(true);
+		//จัดให้ text ให้อยู่ตรงกลาง
+		$objectPHPExcel->getActiveSheet()->getStyle('A4:K4')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,));
+
+		$objectPHPExcel->getActiveSheet()->getStyle('G4')->getAlignment()->setWrapText(true);
+
+		$rowCount = 5;
+		$i_No = 0;
+		foreach ($data_lists as $row)
+		{
+			$i_No++;
+			$objectPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $i_No);
+			$objectPHPExcel->getActiveSheet()->setCellValueExplicit('B' . $rowCount, $row['rfNameIdNumCard'], PHPExcel_Cell_DataType::TYPE_STRING);
+			$objectPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $row['rfPernameIdPreName']);
+			$objectPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $row['rfNameIdEmpName']);
+			$objectPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $row['rfNameIdEmpSurname']);
+			// $objectPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $row['month_mony_sso']);
+			// $objectPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $row['month_de_ssop']);
+			// $objectPHPExcel->getActiveSheet()->setCellValueExplicit('H' . $rowCount, $row[''], PHPExcel_Cell_DataType::TYPE_STRING);
+			// $objectPHPExcel->getActiveSheet()->setCellValueExplicit('I' . $rowCount, $row[''], PHPExcel_Cell_DataType::TYPE_STRING);
+			$objectPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $row['rfBranchIdBranchNick']);
+			//$objectPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $row['']);
+
+			$rowCount++;
+
+		}
+
+		//Total
+		$sn = $rowCount + 2 ;
+
+		$objectPHPExcel->getActiveSheet()->setCellValue('E' . $sn, 'รวม');
+		$objectPHPExcel->getActiveSheet()->setCellValue('F' . $sn, '=SUM(F5:F' . $rowCount . ')');
+		$objectPHPExcel->getActiveSheet()->setCellValue('G' . $sn, '=SUM(G5:G' . $rowCount . ')');
+
+
+		foreach (range('A', 'K') as $columnID) {
+			$objectPHPExcel->getActiveSheet()->getColumnDimension($columnID)
+			->setAutoSize(true);
+		}
+
+		$filename = "Genreport_505Excel" . date("Y-m-d-H-i-s") . "";
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
+		header('Cache-Control: max-age=0');
+
+		$object_writer = PHPExcel_IOFactory::createWriter($objectPHPExcel, 'Excel2007');
+
+
+		$object_writer->save('php://output');
+
+	}
+
 
 
 

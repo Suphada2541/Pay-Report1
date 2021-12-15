@@ -17,7 +17,7 @@ class Monthcom_model extends MY_Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->my_table = 'tb_summonth';
+		$this->my_table = 'tb_paypayroll';
 		$this->set_table_name($this->my_table);
 		$this->order_field = '';
 		$this->order_sort = '';
@@ -26,9 +26,9 @@ class Monthcom_model extends MY_Model
 
 	public function exists($data)
 	{
-		$monthpr_id = checkEncryptData($data['monthpr_id']);
+		$paypr_id  = checkEncryptData($data['paypr_id ']);
 		$this->set_table_name($this->my_table);
-		$this->set_where("$this->my_table.monthpr_id = $monthpr_id");
+		$this->set_where("$this->my_table.paypr_id  = $paypr_id ");
 		return $this->count_record();
 	}
 
@@ -36,7 +36,7 @@ class Monthcom_model extends MY_Model
 	public function load($id)
 	{
 		$this->set_table_name($this->my_table);
-		$this->set_where("$this->my_table.monthpr_id = $id");
+		$this->set_where("$this->my_table.paypr_id  = $id");
 		$lists = $this->load_record();
 		return $lists;
 	}
@@ -84,11 +84,11 @@ class Monthcom_model extends MY_Model
 			$search_method_value = '';
 
 			if($search_field == 'rf_company'){
-				$search_method_field = "tb_branch_4.rf_company_Id";
+				$search_method_field = "tb_branch.rf_company_Id";
 				$search_method_value = "LIKE '%$value%'";				
 			}
 
-			$where	.= ($where != '' ? ' AND ' : '') . " $search_method_field $search_method_value AND monthpay ='$paynum' AND yearpay ='$payyear'"; 
+			$where	.= ($where != '' ? ' AND ' : '') . " $search_method_field $search_method_value AND tb_payment.rf_month_id ='$paynum' AND tb_payment.pay_year ='$payyear'"; 
 
 			if($order_by == ''){
 				$order_by	= "";
@@ -98,89 +98,12 @@ class Monthcom_model extends MY_Model
 		$total_row = $this->count_record();
 		$search_row = $total_row;
 		if ($where != '') {
-			$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-			$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-			$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-			$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-			$this->db->join('tb_company AS tb_company_5', "tb_branch_4.rf_company_Id = tb_company_5.company_id ", 'left');
-
-			$this->set_where($where);
-			$search_row = $this->count_record();
-		}
-		$offset = $start_row;
-		$limit = $per_page;
-		$this->set_order_by($order_by);
-		if($offset != FALSE){
-			$this->set_offset($offset);
-		}
-		if($limit != FALSE){
-			$this->set_limit($limit);
-		}
-		$this->db->select("$this->my_table.*
-				, tb_paymonth_1.paymonth_id AS monthpayPaymonthId
-				, tb_paymonth_1.paymonth AS monthpayPaymonth
-				, tb_person_2.emp_name AS rfNameIdEmpName
-				, tb_person_2.emp_surname AS rfNameIdEmpSurname
-				, tb_person_2.start_date AS rfNameIdStartDate
-				, tb_pername_3.pre_name AS rfPernameIdPreName
-				, tb_branch_4.branch_nick AS rfBranchIdBranchNick
-				, tb_company_5.company_name AS rfCompanyIdCompanyName
-				, tb_company_5.company_nick AS rfCompanyIdCompanyNick
-				");
-		$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-		$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-		$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-		$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-		$this->db->join('tb_company AS tb_company_5', "tb_branch_4.rf_company_Id = tb_company_5.company_id ", 'left');
-
-		$list_record = $this->list_record();
-		$data = array(
-				'total_row'	=> $total_row, 
-				'search_row'	=> $search_row,
-				'list_data'	=> $list_record
-		);
-		return $data;
-	}
-
-	public function sumexcel($start_row = FALSE, $per_page = FALSE)
-	{
-		$search_field 	= $this->session->userdata($this->session_name . '_search_field');
-		$value 	= $this->session->userdata($this->session_name . '_value');
-		$value 	= trim($value);
-		$paynum = $this->session->userdata($this->session_name . '_paynum');
-		$payyear = $this->session->userdata($this->session_name . '_payyear');
-		
-		$where	= '';
-		$order_by	= '';
-		if($this->order_field != ''){
-			$order_field = $this->order_field;
-			$order_sort = $this->order_sort;
-			$order_by	= " $this->my_table.$order_field $order_sort";
-		}
-		
-		if($search_field != '' && $value != ''){
-			$search_method_field = "$this->my_table.$search_field";
-			$search_method_value = '';
-
-			if($search_field == 'rf_company'){
-				$search_method_field = "tb_branch_4.rf_company_Id";
-				$search_method_value = "LIKE '%$value%'";				
-			}
-
-			$where	.= ($where != '' ? ' AND ' : '') . " $search_method_field $search_method_value AND monthpay ='$paynum' AND yearpay ='$payyear'"; 
-
-			if($order_by == ''){
-				$order_by	= "";
-			}
-		}
-		$this->set_table_name($this->my_table);
-		$total_row = $this->count_record();
-		$search_row = $total_row;
-		if ($where != '') {
-			$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-			$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-			$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-			$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
+			$this->db->join('tb_branch', "$this->my_table.rf_branch_id = tb_branch.branch_id", 'left');
+			$this->db->join('tb_company', "tb_branch.rf_company_Id = tb_company.company_id ", 'left');
+			$this->db->join('tb_payment', "$this->my_table.rf_pay_id = tb_payment.pay_id", 'left');
+			$this->db->join('tb_paymonth', "tb_payment.rf_month_id = tb_paymonth.paymonth_id", 'left');
+			$this->db->join('tb_person', "$this->my_table.rf_name_id = tb_person.name_id", 'left');
+			$this->db->join('tb_pername', "tb_person.rf_pre_id = tb_pername.pre_id", 'left');
 			
 			$this->set_where($where);
 			$search_row = $this->count_record();
@@ -195,23 +118,29 @@ class Monthcom_model extends MY_Model
 			$this->set_limit($limit);
 		}
 		$this->db->select("$this->my_table.*
-				, tb_paymonth_1.paymonth_id AS monthpayPaymonthId
-				, tb_paymonth_1.paymonth AS monthpayPaymonth
-				, tb_person_2.emp_name AS rfNameIdEmpName
-				, tb_person_2.emp_surname AS rfNameIdEmpSurname
-				, tb_person_2.start_date AS rfNameIdStartDate
-				, tb_pername_3.pre_name AS rfPernameIdPreName
-				, tb_branch_4.branch_nick AS rfBranchIdBranchNick
+				, tb_company.company_name AS rfCompanyIdCompanyName
+				, tb_company.company_nick AS rfCompanyIdCompanyNick
+				, tb_branch.branch_nick AS rfBranchIdBranchNick
+				, tb_paymonth.paymonth_id AS monthpayPaymonthId
+				, tb_paymonth.paymonth AS monthpayPaymonth
+				, tb_paymonth.payyear AS monthpayPayyear
+				, tb_person.emp_name AS rfNameIdEmpName
+				, tb_person.emp_surname AS rfNameIdEmpSurname
+				, tb_person.start_date AS rfNameIdStartDate
+				, tb_pername.pre_name AS rfPernameIdPreName
+				, tb_person.num_card AS rfNameIdNumCard
+				, tb_person.name_id AS rfNameIDNameID
 				");
-		$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-		$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-		$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-		$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-		$this->db->select_sum("$this->my_table.month_mony_sso");
-		$this->db->select_sum("$this->my_table.month_de_ssop");
-		$this->db->select_sum("$this->my_table.month_de_ssoc");
+		
+		$this->db->join('tb_branch', "$this->my_table.rf_branch_id = tb_branch.branch_id", 'left');
+		$this->db->join('tb_company', "tb_branch.rf_company_Id = tb_company.company_id ", 'left');
+		$this->db->join('tb_payment', "$this->my_table.rf_pay_id = tb_payment.pay_id", 'left');
+		$this->db->join('tb_paymonth', "tb_payment.rf_month_id = tb_paymonth.paymonth_id", 'left');
+		$this->db->join('tb_person', "$this->my_table.rf_name_id = tb_person.name_id", 'left');
+		$this->db->join('tb_pername', "tb_person.rf_pre_id = tb_pername.pre_id", 'left');
 
 		$list_record = $this->list_record();
+		//echo $this->db->last_query();
 		$data = array(
 				'total_row'	=> $total_row, 
 				'search_row'	=> $search_row,
@@ -219,176 +148,6 @@ class Monthcom_model extends MY_Model
 		);
 		return $data;
 	}
-
-	public function pdf_sso($start_row = FALSE, $per_page = FALSE)
-	{
-		$search_field 	= $this->session->userdata($this->session_name . '_search_field');
-		$value 	= $this->session->userdata($this->session_name . '_value');
-		$value 	= trim($value);
-		$paynum = $this->session->userdata($this->session_name . '_paynum');
-		$payyear = $this->session->userdata($this->session_name . '_payyear');
-		
-		$where	= '';
-		$order_by	= '';
-		if($this->order_field != ''){
-			$order_field = $this->order_field;
-			$order_sort = $this->order_sort;
-			$order_by	= " $this->my_table.$order_field $order_sort";
-		}
-		
-		if($search_field != '' && $value != ''){
-			$search_method_field = "$this->my_table.$search_field";
-			$search_method_value = '';
-
-			if($search_field == 'rf_company'){
-				$search_method_field = "tb_branch_4.rf_company_Id";
-				$search_method_value = "LIKE '%$value%'";				
-			}
-
-			$where	.= ($where != '' ? ' AND ' : '') . " $search_method_field $search_method_value AND monthpay ='$paynum' AND yearpay ='$payyear'"; 
-
-			if($order_by == ''){
-				$order_by	= "";
-			}
-		}
-		$this->set_table_name($this->my_table);
-		$total_row = $this->count_record();
-		$search_row = $total_row;
-		if ($where != '') {
-			$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-			$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-			$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-			$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-			$this->db->join('tb_company AS tb_company_5', "tb_branch_4.rf_company_Id = tb_company_5.company_id", 'left');
-
-			$this->set_where($where);
-			$search_row = $this->count_record();
-		}
-		$offset = $start_row;
-		$limit = $per_page;
-		$this->set_order_by($order_by);
-		if($offset != FALSE){
-			$this->set_offset($offset);
-		}
-		if($limit != FALSE){
-			$this->set_limit($limit);
-		}
-		$this->db->select("$this->my_table.* ,$this->my_table.month_mony_sso AS total_mony_sso
-				, tb_paymonth_1.paymonth_id AS monthpayPaymonthId
-				, tb_paymonth_1.paymonth AS monthpayPaymonth
-				, tb_person_2.emp_name AS rfNameIdEmpName
-				, tb_person_2.emp_surname AS rfNameIdEmpSurname
-				, tb_person_2.num_card AS rfNameIdNumCard
-				, tb_pername_3.pre_name AS rfPernamePreName
-				, tb_branch_4.branch_name AS rfBranchIdBranchName
-				, tb_branch_4.branch_code AS rfBranchIdBranchCode
-				, tb_branch_4.branch_social AS rfBranchIdBranchSocial
-				, tb_company_5.company_name AS rfBranchIdCompanyName
-				, tb_company_5.social_account AS rfBranchIdSocialAccount
-				");
-		$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-		$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-		$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-		$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-		$this->db->join('tb_company AS tb_company_5', "tb_branch_4.rf_company_Id = tb_company_5.company_id", 'left');
-		$this->db->group_by("$this->my_table.rf_name_id");
-
-		$list_record = $this->list_record();
-		$data = array(
-				'total_row'	=> $total_row, 
-				'search_row'	=> $search_row,
-				'list_data'	=> $list_record
-		);
-		return $data;
-	}
-
-	public function pdf_tax($start_row = FALSE, $per_page = FALSE)
-	{
-		$search_field 	= $this->session->userdata($this->session_name . '_search_field');
-		$value 	= $this->session->userdata($this->session_name . '_value');
-		$value 	= trim($value);
-		$paynum = $this->session->userdata($this->session_name . '_paynum');
-		$payyear = $this->session->userdata($this->session_name . '_payyear');
-		
-		$where	= '';
-		$order_by	= '';
-		if($this->order_field != ''){
-			$order_field = $this->order_field;
-			$order_sort = $this->order_sort;
-			$order_by	= " $this->my_table.$order_field $order_sort";
-		}
-		
-		if($search_field != '' && $value != ''){
-			$search_method_field = "$this->my_table.$search_field";
-			$search_method_value = '';
-			if($search_field == 'rf_company'){
-				$search_method_field = "tb_branch_4.rf_company_Id";
-				$search_method_value = "LIKE '%$value%'";				
-			}
-
-			$where	.= ($where != '' ? ' AND ' : '') . " $search_method_field $search_method_value AND monthpay ='$paynum' AND yearpay ='$payyear'"; 
-
-			if($order_by == ''){
-				$order_by	= "";
-			}
-		}
-		$this->set_table_name($this->my_table);
-		$total_row = $this->count_record();
-		$search_row = $total_row;
-		if ($where != '') {
-			$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-		$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-
-			$this->set_where($where);
-			$search_row = $this->count_record();
-		}
-		$offset = $start_row;
-		$limit = $per_page;
-		$this->set_order_by($order_by);
-		if($offset != FALSE){
-			$this->set_offset($offset);
-		}
-		if($limit != FALSE){
-			$this->set_limit($limit);
-		}
-		$this->db->select("$this->my_table.* ,$this->my_table.month_mony_sso AS total_mony_sso
-		, tb_paymonth_1.paymonth_id AS monthpayPaymonthId
-		, tb_paymonth_1.paymonth AS monthpayPaymonth
-		, tb_person_2.emp_name AS rfNameIdEmpName
-		, tb_person_2.emp_surname AS rfNameIdEmpSurname
-		, tb_person_2.num_card AS rfNameIdNumCard
-		, tb_person_2.rf_typestatus_id AS rfNameIdTypestatusId
-		, tb_person_2.person_num_student AS rfNameIdPersonNumStudent
-		, tb_person_2.person_num_children AS rfNameIdPersonNumChildren
-		, tb_person_2.person_total AS rfNameIdPersonTotal
-		, tb_person_2.rf_typetex_id AS rfNameIdTypetexId
-		, tb_pername_3.pre_name AS rfPernamePreName
-		, tb_branch_4.branch_name AS rfBranchIdBranchName
-		, tb_branch_4.branch_code AS rfBranchIdBranchCode
-		, tb_company_5.company_name AS rfBranchIdCompanyName
-		, tb_company_5.tax_account AS rfBranchIdTaxAccount
-		, tb_typeincome_6.income_type AS  rfNameIdTypeincome
-		, tb_paypayroll_7.paypr_salary_net AS rfPayprIdSalaryNet
-		, tb_paypayroll_7.paypr_de_tax AS rfPayprIdDeTax
-		");
-		$this->db->join('tb_paymonth AS tb_paymonth_1', "$this->my_table.monthpay = tb_paymonth_1.paymonth_id", 'left');
-		$this->db->join('tb_person AS tb_person_2', "$this->my_table.rf_name_id = tb_person_2.name_id", 'left');
-		$this->db->join('tb_pername AS tb_pername_3', "tb_person_2.rf_pre_id = tb_pername_3.pre_id", 'left');
-		$this->db->join('tb_branch AS tb_branch_4', "tb_person_2.rf_branch_id = tb_branch_4.branch_id", 'left');
-		$this->db->join('tb_company AS tb_company_5', "tb_branch_4.rf_company_Id = tb_company_5.company_id", 'left');
-		$this->db->join('tb_typeincome AS tb_typeincome_6', "tb_person_2.rf_typeincom_id = tb_typeincome_6.income_id", 'left');
-		$this->db->join('tb_paypayroll AS tb_paypayroll_7', "tb_person_2.name_id = tb_paypayroll_7.rf_name_id", 'left');
-		$this->db->group_by("$this->my_table.rf_name_id");
-		
-		$list_record = $this->list_record();
-		$data = array(
-				'total_row'	=> $total_row, 
-				'search_row'	=> $search_row,
-				'list_data'	=> $list_record
-		);
-		return $data;
-	}
-
 
 	public function update($post)
 	{
@@ -403,9 +162,9 @@ class Monthcom_model extends MY_Model
 		);
 
 		if(!empty($data)){
-			$monthpr_id = checkEncryptData($post['encrypt_monthpr_id']);
+			$paypr_id  = checkEncryptData($post['encrypt_paypr_id ']);
 			$this->set_table_name($this->my_table);
-			$this->set_where("$this->my_table.monthpr_id = $monthpr_id");
+			$this->set_where("$this->my_table.paypr_id  = $paypr_id ");
 			return $this->update_record($data);
 		}else{
 			$this->error_message = 'ไม่พบข้อมูลที่เปลี่ยนแปลง';
@@ -415,9 +174,9 @@ class Monthcom_model extends MY_Model
 
 	public function delete($post)
 	{
-			$monthpr_id = checkEncryptData($post['encrypt_monthpr_id']);
+			$paypr_id  = checkEncryptData($post['encrypt_paypr_id ']);
 		$this->set_table_name($this->my_table);
-		$this->set_where("$this->my_table.monthpr_id = $monthpr_id");
+		$this->set_where("$this->my_table.paypr_id  = $paypr_id ");
 		return $this->delete_record();
 	}
 

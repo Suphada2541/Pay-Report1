@@ -3,50 +3,56 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header w3-theme-d5">
-				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายงานประจำงวด : แยกตามสาขา</b></h3>
+				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายงานพิเศษ : แยกตามบริษัท</b></h3>
 			</div>
 			<div class="card-body">
 				<form class="forms-sample" name="formSearch" method="post" action="{page_url}/search">
 					{csrf_protection_field}
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-8">
+
 							<div class="form-group">
-								<input type="hidden" class="form-control" value="rf_branch_id" name="search_field" />
+								<input type="hidden" class="form-control" value="rf_company" name="search_field" />
+
 							</div>
 							<div class="form-group">
-								<label class='control-label' for='rf_branch_id'>
-									<h6>ระบุสาขาที่ต้องการค้นหา : </h6>
+								<label class='col-sm-4 control-label' for='rf_company'>
+									<h6>ระบุบริษัทที่ต้องการค้นหา : </h6>
+								</label>
+								<select id="rf_company" name="txtSearch" value="{txt_search}">
+									<option value="">- เลือก บริษัท -</option>
+									{tb_comppany_rf_company_id_option_list}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label class='control-label' for='monthpay'>
+									<h6> &nbsp; &nbsp; ระบุเดือน-ปี : </h6>
 								</label> <br>
-								<select id="rf_branch_id" name="txtSearch" value="{txt_search}">
-									<option value="">- เลือก สาขา -</option>
-									{tb_branch_rf_branch_id_option_list}
+								&nbsp; &nbsp; &nbsp;<select id='monthpay' name="txtpnum" value="{txt_pnum}">
+									<option value="">- เลือก เดือน -</option>
+									{tb_paymonth_monthpay_option_list}
 								</select>
 							</div>
 
-							<div class="form-group">
-								<label class='control-label' for='rf_pay_id'>
-									<h6> เลือกงวดการจ่ายค่าจ้าง : </h6>
-								</label> <br>
-								<select id='rf_pay_id' name="rf_pay_id" value="{txt_pnum}">
-									<option value="">วันที่เริ่มต้น-ถึงวันที่ </option>
-									{tb_payment_rf_pay_id_option_list}
-								</select>
-							</div>
-							<input type="hidden" value="{order_by}" name="order_by" />
+						</div>
 
-							<button id="submit" type="submit" name="submit" class="btn btn-info">
-								<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
-							</button>
-							<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button></a>
 
-							<input type="hidden" id="search_datarow" value="{search_datarow}" name="search_datarow" class="form-control" />
+						<div class="form-group">
+							<label class='control-label' for='txtYear'>
+								<h6> &nbsp; </h6>
+							</label> <br>
+							<input type="text" class="form-control col-sm-12" id="txtYear" name="txtYear" value="{txt_year}" placeholder="ระบุ ปี พ.ศ.">
 						</div>
 
 						<div class="col-sm-6">
 							<div class="form-group">
-								<input type="hidden" class="form-control" id="report1id" name="reportid" value="">
+								<input  class="form-control" id="report5id" name="reportid" value="">
 							</div>
-							<br><br><br><br><br>
+
 							<div class="form-group">
 								<label class='control-label' for='rf_report_id'>
 									<h6>ระบุชื่อรายงาน : </h6>
@@ -66,59 +72,70 @@
 						</div>
 
 					</div>
+					<input type="hidden" value="{order_by}" name="order_by" />
 
-				</form>
-				<br>
-				<div class="row">
-					<div class="col-sm-8">
-						<h4><i class="fa fa-list-alt"></i><b> List Data Payroll</b></h4>
-					</div>
-					<div class="col-sm-4 text-left">
-						<h4> ทั้งหมด <span class="badge badge-primary"> {search_row}</span> รายการ</b></h4>
+					<button type="submit" name="submit" class="btn btn-info">
+						<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
+					</button>
+					<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button></a>
 
-					</div>
+					<input type="hidden" id="search_datarow" value="{search_datarow}" name="search_datarow" class="form-control" />
+			</div>
+
+
+			</form>
+			<br>
+			<div class="row">
+				<div class="col-sm-8">
+					<h4><i class="fa fa-list-alt"></i><b> List Data Payroll</b></h4>
 				</div>
-
-
-				<hr />
-				<style type="text/css">
-					input[type=search] {
-						width: 350px !important;
-					}
-				</style>
-
-				<div class="dt-responsive">
-
-					<table id="simpletable" class="table table-striped table-bordered nowrap">
-						<thead class="info">
-							<tr bgcolor="#dddddd">
-								<th>#</th>
-								<th>รหัสพนักงาน</th>
-								<th>ชื่อพนักงาน</th>
-								<th>สาขา</th>
-								<th>รวมรับ</th>
-								<th>รวมหักเงิน</th>
-								<th>รับสุทธิ*</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr parser-repeat="[data_list]" id="row_{record_number}">
-								<td style="text-align:center;">[{record_number}]</td>
-								<td>{rfPersonNameId}</td>
-								<td>{rfNameIdEmpName} {rfNameIdEmpSurname}</td>
-								<td>{rfBranchIdBranchNick}</td>
-								<td>{paypr_income_sum}</td>
-								<td>{paypr_de_total}</td>
-								<td>{paypr_salary_net}</td>
-							</tr>
-						</tbody>
-					</table>
+				<div class="col-sm-4 text-left">
+					<h4> ทั้งหมด <span class="badge badge-primary"> {search_row}</span> รายการ</b></h4>
 
 				</div>
 			</div>
 
+
+			<hr />
+			<style type="text/css">
+				input[type=search] {
+					width: 350px !important;
+				}
+			</style>
+
+			<div class="dt-responsive">
+
+				<table id="simpletable" class="table table-striped table-bordered nowrap">
+					<thead class="info">
+						<tr bgcolor="#dddddd">
+							<th width="20px;">#</th>
+							<th>ปี</th>
+							<th>เดือน</th>
+							<th>ชื่อพนักงาน</th>
+							<th>ยอดเงินคิดสปส.</th>
+							<th>เงินสปส.ส่วนพนง</th>
+							<th>เงินสปส.ส่วนนายจ้าง</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr parser-repeat="[data_list]" id="row_{record_number}">
+							<td style="text-align:center;">[{record_number}]</td>
+							<td>{yearpay}</td>
+							<td>{monthpayPaymonthId} - {monthpayPaymonth}</td>
+							<td>{rfNameIdEmpName} {rfNameIdEmpSurname}</td>
+							<td>{month_mony_sso}</td>
+							<td>{month_de_ssop}</td>
+							<td>{month_de_ssoc}</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
 		</div>
+
+
 	</div>
+</div>
 </div>
 
 
@@ -171,7 +188,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 	var param_search_field = '{search_field}';
 	var param_current_page = '{current_page_offset}';

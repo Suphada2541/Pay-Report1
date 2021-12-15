@@ -94,7 +94,8 @@ class Yearbra extends CRUD_Controller
 		$this->session->unset_userdata($this->Yearbra->session_name . '_search_field');
 		$this->session->unset_userdata($this->Yearbra->session_name . '_value');
 		$this->session->unset_userdata($this->Yearbra->session_name . '_payyear');
-		$this->session->unset_userdata($this->Payprbra->session_name . '_report');
+		$this->session->unset_userdata($this->Yearbra->session_name . '_payyear');
+		$this->session->unset_userdata($this->Yearbra->session_name . '_report');
 		$this->search();
 	}
 
@@ -119,13 +120,13 @@ class Yearbra extends CRUD_Controller
 			$search_field =  $this->input->post('search_field', TRUE);
 			$value = $this->input->post('txtSearch', TRUE);
 			$payyear = $this->input->post('txtYear', TRUE);
-			$report = $this->input->post('rf_report_id', TRUE);
+			$report = $this->input->post('rf_report4_id', TRUE);
 
 			$arr = array(
 				$this->Yearbra->session_name . '_search_field' => $search_field,
 				$this->Yearbra->session_name . '_value' => $value,
 				$this->Yearbra->session_name . '_payyear' => $payyear,
-				$this->Payprbra->session_name . '_report' => $report
+				$this->Yearbra->session_name . '_report' => $report
 			);
 
 			$this->session->set_userdata($arr);
@@ -133,7 +134,7 @@ class Yearbra extends CRUD_Controller
 			$search_field = $this->session->userdata($this->Yearbra->session_name . '_search_field');
 			$value = $this->session->userdata($this->Yearbra->session_name . '_value');
 			$payyear = $this->session->userdata($this->Yearbra->session_name . '_payyear');
-			$report = $this->session->userdata($this->Payprbra->session_name . '_report');
+			$report = $this->session->userdata($this->Yearbra->session_name . '_report');
 		}
 
 		$start_row = $this->uri->segment($this->uri_segment, '0');
@@ -312,29 +313,7 @@ class Yearbra extends CRUD_Controller
 		return $data;
 	}
 
-	public function export_yearbra_report()
-	{
-		$report = $this->session->userdata('_report');
-
-		if ($report == 16) //Data ภงด. ประจำปี
-		{
-			$this->genreport_401Excel();
-		} elseif ($report == 17)  //ลาสะสมประจำปี
-		{
-			$this->genreport_402Excel();
-		} elseif ($report == 18) //50 ทวิA4 ประจำปี
-		{
-			$this->genreport_403Pdf();
-		} elseif ($report == 19) //รายชื่อพนักงานยังไม่คืนเงินประกัน
-		{
-			$this->genreport_404Excel();
-		} elseif ($report == 20) //รายชื่อพนักงานหักเงินประกันไม่ครบ
-		{
-			$this->genreport_405Excel();
-		} else {
-			return $report;
-		}
-	}
+	
 
 	public function genreport_405Excel()
 	{
