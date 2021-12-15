@@ -741,56 +741,6 @@ class Payprbra extends CRUD_Controller
 		return $data;
 	}
 
-	public function export_payprbra_report()
-	{
-		$report = $this->session->userdata('_report');
-
-		if ($report == 1) //Payroll จ่ายพนักงาน 1  มารตาฐาน
-		{
-			$this->genreport_101Pdf();
-		}
-		elseif ($report == 2)  //Payroll จ่ายพนักงาน 2  กิจ / Shut Down
-		{
-			$this->genreport_102Pdf();
-		}
-		elseif ($report == 3) //Payroll จ่ายพนักงาน 3  ชมโอทีพิเศษ ไม่มีรายหัก
-		{
-			$this->genreport_103Pdf();
-		}
-		elseif ($report == 4) //Payroll จ่ายพนักงาน 4  ชมโอที พิเศษ
-		{
-			$this->genreport_104Pdf();
-		}
-		elseif ($report == 5) //Payroll จ่ายพนักงาน 5  ไม่โชว์รายการหัก
-		{
-			$this->genreport_105Pdf();
-		}
-		elseif ($report == 6) //Silp 1  เงินเดือนพนักงาน(ATM)คาร์บอน
-		{
-			$this->genreport_106Pdf();
-		}
-		elseif ($report == 7) //Silp 1  เงินเดือนพนักงาน(เงินสด)คาร์บอน
-		{
-			$this->genreport_107Pdf();
-		}
-		elseif ($report == 8) //กองทุน-รายการหักกองทุนประจำงวด
-		{
-			$this->genreport_120Excel();
-		}
-		elseif ($report == 9) //Silp Data Excel Format Makub
-		{
-			$this->genreport_150Excel();
-		}
-		elseif ($report == 16) //Payroll ทะเบียนจ่ายค่าจ้าง Data Excel
-		{
-			$this->genreport_101Excel();
-		}
-		else
-		{
-			$this->list_all();
-		}
-	}
-
 	public function genreport_101Pdf() 
 	{
 		// load PDF library

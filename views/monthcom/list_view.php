@@ -3,139 +3,132 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header w3-theme-d5">
-				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายงานพิเศษ : แยกตามบริษัท</b></h3>
+				<h3 class="card-title text-white"><i class="fa fa-list-alt"></i><b> รายงานพิเศษแยกตามเดือน/ปี : แยกตามบริษัท</b></h3>
 			</div>
 			<div class="card-body">
 				<form class="forms-sample" name="formSearch" method="post" action="{page_url}/search">
 					{csrf_protection_field}
-					<div class="row">
-						<div class="col-sm-8">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-sm-7">
+								<div class="row">
+									<div class="form-group">
+										<label class='control-label' for='rf_company_id'>
+											<h6> ระบุบริษัทที่ต้องการ : </h6>
+										</label> <br>
+										<select id='rf_company' name="company_id" value="{company_id}">
+											<option value="">- เลือก บริษัท -</option>
+											{tb_comppany_rf_company_id_option_list}
+										</select>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group">
+										<label class='control-label' for='monthpay'>
+											<h6> ระบุเดือน-ปี : </h6>
+										</label> <br>
+										<select id='monthpay' name="txtpnum" value="{txt_pnum}">
+											<option value="">- เลือก เดือน -</option>
+											{tb_paymonth_monthpay_option_list}
+										</select>
+									</div>
 
-							<div class="form-group">
-								<input type="hidden" class="form-control" value="rf_company" name="search_field" />
+									<div class="form-group">
+										<label class='control-label' for='txtYear'>
+											<h6> &nbsp; </h6>
+										</label> <br>
+										<input type="text" class="form-control col-sm-12" id="txtYear" name="txtYear" value="{txt_year}" placeholder="ระบุ ปี พ.ศ.">
+									</div>
+								</div>
+								<input type="hidden" value="{order_by}" name="order_by" />
+
+								<button type="submit" name="submit" class="btn btn-info">
+									<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
+								</button>
+								<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button></a>
+
+								<input type="hidden" id="search_datarow" value="{search_datarow}" name="search_datarow" class="form-control" />
 
 							</div>
-							<div class="form-group">
-								<label class='col-sm-4 control-label' for='rf_company'>
-									<h6>ระบุบริษัทที่ต้องการค้นหา : </h6>
-								</label>
-								<select id="rf_company" name="txtSearch" value="{txt_search}">
-									<option value="">- เลือก บริษัท -</option>
-									{tb_comppany_rf_company_id_option_list}
-								</select>
+
+							<div class="col-sm-5">
+								<div class="row">
+									<div class="form-group">
+										<label class='control-label' for='rf_report_id'>
+											<h6>ระบุชื่อรายงาน : </h6>
+										</label> <br>
+										<select id="rf_report_id" name="rf_report_id">
+											<option value="">- เลือก รายงาน -</option>
+											{tb_report_report_id_option_list}
+										</select>
+									</div>
+									<input type="hidden" class="form-control" id="report5id" name="reportid" value="">
+									<div class="form-group">
+										<a class="btn btn-success btn-lg" id="btnReport" href="" title="ส่งออกข้อมูล">
+											<i class="fas fa-download"></i></span> Eport Report
+										</a>
+									</div>
+								</div>
 							</div>
+
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label class='control-label' for='monthpay'>
-									<h6> &nbsp; &nbsp; ระบุเดือน-ปี : </h6>
-								</label> <br>
-								&nbsp; &nbsp; &nbsp;<select id='monthpay' name="txtpnum" value="{txt_pnum}">
-									<option value="">- เลือก เดือน -</option>
-									{tb_paymonth_monthpay_option_list}
-								</select>
-							</div>
-
-						</div>
-
-
-						<div class="form-group">
-							<label class='control-label' for='txtYear'>
-								<h6> &nbsp; </h6>
-							</label> <br>
-							<input type="text" class="form-control col-sm-12" id="txtYear" name="txtYear" value="{txt_year}" placeholder="ระบุ ปี พ.ศ.">
-						</div>
-
-						<div class="col-sm-6">
-							<div class="form-group">
-								<input type="hidden" class="form-control" value="rf_branch_id" name="search_field" />
-							</div>
-							<div class="form-group">
-								<label class='control-label' for='rf_report_id'>
-									<h6>ระบุชื่อรายงาน : </h6>
-								</label> <br>
-								&nbsp; &nbsp; &nbsp;<select id="rf_report_id" name="rf_report_id" value="{txt_report}">
-									<option value="">- เลือก รายงาน -</option>
-									{tb_report_report_id_option_list}
-								</select>
-							</div>
-
-
-							<div class="form-group">
-
-								<a class="btn btn-success btn-lg" id="btnReport" href="" title="ส่งออกข้อมูล">
-									<i class="fas fa-download"></i></span> Eport Report
-								</a>
-							</div>
-						</div>
+				</form>
+				<br>
+				<div class="row">
+					<div class="col-sm-8">
+						<h4><i class="fa fa-list-alt"></i><b> List Data Payroll</b></h4>
+					</div>
+					<div class="col-sm-4 text-left">
+						<h4> ทั้งหมด <span class="badge badge-primary"> {search_row}</span> รายการ</b></h4>
 
 					</div>
-					<input type="hidden" value="{order_by}" name="order_by" />
-
-					<button type="submit" name="submit" class="btn btn-info">
-						<span class="glyphicon glyphicon-search"><i class="fas fa-search"></i>Search</span>
-					</button>
-					<a href="{page_url}" title="รีเฟสหน้าจอ"><button type="button" class="btn btn-primary"><i class="fas fa-sync-alt"> </i>Clear</button></a>
-
-					<input type="hidden" id="search_datarow" value="{search_datarow}" name="search_datarow" class="form-control" />
-			</div>
-
-
-			</form>
-			<br>
-			<div class="row">
-				<div class="col-sm-8">
-					<h4><i class="fa fa-list-alt"></i><b> List Data Payroll</b></h4>
 				</div>
-				<div class="col-sm-4 text-left">
-					<h4> ทั้งหมด <span class="badge badge-primary"> {search_row}</span> รายการ</b></h4>
+
+
+				<hr />
+				<style type="text/css">
+					input[type=search] {
+						width: 350px !important;
+					}
+				</style>
+
+				<div class="dt-responsive">
+
+					<table id="simpletable" class="table table-striped table-bordered nowrap">
+						<thead class="info">
+							<tr bgcolor="#dddddd">
+								<th width="20px;">#</th>
+								<th>ชื่อบริษัท</th>
+								<th>ชื่อสาขา</th>
+								<th>เดือน</th>
+								<th>ปี</th>
+								<th>รหัสพนักงาน</th>
+								<th>ชื่อ - นามสุกล</th>
+
+
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr parser-repeat="[data_list]" id="row_{record_number}">
+								<td style="text-align:center;">[{record_number}]</td>
+								<td>{rfCompanyIdCompanyNick}</td>
+								<td>{rfBranchIdBranchNick}</td>
+								<td>{monthpayPaymonthId} - {monthpayPaymonth}</td>
+								<td>{monthpayPayyear}</td>
+								<td>{rfNameIDNameID}</td>
+								<td>{rfNameIdEmpName} {rfNameIdEmpSurname}</td>
+							</tr>
+						</tbody>
+					</table>
 
 				</div>
 			</div>
 
 
-			<hr />
-			<style type="text/css">
-				input[type=search] {
-					width: 350px !important;
-				}
-			</style>
-
-			<div class="dt-responsive">
-
-				<table id="simpletable" class="table table-striped table-bordered nowrap">
-					<thead class="info">
-						<tr bgcolor="#dddddd">
-							<th width="20px;">#</th>
-							<th>ปี</th>
-							<th>เดือน</th>
-							<th>ชื่อพนักงาน</th>
-							<th>ยอดเงินคิดสปส.</th>
-							<th>เงินสปส.ส่วนพนง</th>
-							<th>เงินสปส.ส่วนนายจ้าง</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr parser-repeat="[data_list]" id="row_{record_number}">
-							<td style="text-align:center;">[{record_number}]</td>
-							<td>{yearpay}</td>
-							<td>{monthpayPaymonthId} - {monthpayPaymonth}</td>
-							<td>{rfNameIdEmpName} {rfNameIdEmpSurname}</td>
-							<td>{month_mony_sso}</td>
-							<td>{month_de_ssop}</td>
-							<td>{month_de_ssoc}</td>
-						</tr>
-					</tbody>
-				</table>
-
-			</div>
 		</div>
-
-
 	</div>
-</div>
 </div>
 
 
